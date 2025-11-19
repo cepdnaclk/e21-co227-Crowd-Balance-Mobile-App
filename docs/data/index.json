@@ -1,4 +1,6 @@
 {
+    "title": "Crowd Balance Mobile App",
+    "description": "Smart exhibition management mobile app for EngEx 2025 offering real-time crowd balancing, missing person notifications, car park tracking, and AI chatbot support. Powered by React Native, MongoDB, Express, and Node.js for optimal performance.",
     "team": [
         {
             "name": "Deeshan Wijesinghe",
@@ -6,25 +8,28 @@
             "eNumber": "E/21/444"
         },
         {
-            "name": "Team Member Name 2",
-            "email": "email@eng.pdn.ac.lk",
+            "name": "Shane Baines",
+            "email": "e21045@eng.pdn.ac.lk",
             "eNumber": "E/yy/xxx"
         },
         {
-            "name": "Team Member Name 3",
-            "email": "email@eng.pdn.ac.lk",
-            "eNumber": "E/yy/xxx"
+            "name": "Ridmal Chamod",
+            "email": "e21065@eng.pdn.ac.lk",
+            "eNumber": "E/21/065"
+        },
+        {
+            "name": "Venuka Kalana",
+            "email": "e21277@eng.pdn.ac.lk",
+            "eNumber": "E/21/277"
         }
     ],
     "supervisors": [
         {
-            "name": "Dr. Supervisor 1",
-            "email": "email@eng.pdn.ac.lk"
-        },
-        {
-            "name": "Supervisor 2",
-            "email": "email@eng.pdn.ac.lk"
+            "name": "Ms. Yasodha Vimukthi",
+            "email": "yasodhav@eng.pdn.ac.lk"
         }
     ],
-    "tags": []
+    "tags": [
+        "Crowd Management", "Mobile App Development", "MongoDB", "Express.js", "React Native", "Node.js", "Expo", "Restful API"
+    ]
 }
