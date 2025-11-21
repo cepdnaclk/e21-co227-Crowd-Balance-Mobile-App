@@ -8,7 +8,8 @@
 
 // export const API_BASE_URL = "http://10.30.251.223:4000"; // My phone hotspot IP Address
 
-export const API_BASE_URL = "https://crowdbalanceapp-production.up.railway.app";
+// export const API_BASE_URL = "https://crowdbalanceapp-production.up.railway.app";
+export const API_BASE_URL = "https://crowd-balance-mobile-app-g0bgdvhacfgzg4ew.southeastasia-01.azurewebsites.net";  // Azure deployment    
 
 
 

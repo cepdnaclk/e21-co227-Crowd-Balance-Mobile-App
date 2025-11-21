@@ -1,6 +1,5 @@
-// Username: adminUser
-// Password: 5NW3N2LlFEBnLE4G
-// URL: mongodb+srv://adminUser:<db_password>@cluster0.llcjvmk.mongodb.net/
+// Load environment variables FIRST
+require('dotenv').config();
 
 const express = require("express");
 const mongoose = require("mongoose");
@@ -11,18 +10,25 @@ const notificationRouter = require("./routes/NotificationRoutes");
 const schoolRoutes = require('./routes/SchoolRoutes');
 const carParkRoutes = require('./routes/CarParkRoutes');
 const chatRoutes = require('./routes/chatRoutes');
-
 const cors = require("cors");
 
 const app = express();
 const PORT = process.env.PORT || 4000;
 
-// const chatRoutes = require('./routes/chat');
-// app.use('/api', chatRoutes);
+// Construct MongoDB URI from environment variables
+const MONGODB_URI = `mongodb+srv://${process.env.MONGODB_USERNAME}:${process.env.MONGODB_PASSWORD}@${process.env.MONGODB_CLUSTER}/${process.env.MONGODB_DATABASE}`;
+
+// Debug: Check if environment variables are loaded
+if (!process.env.MONGODB_USERNAME || !process.env.MONGODB_PASSWORD) {
+  console.error('Missing MongoDB credentials!');
+  process.exit(1);
+}
+console.log('Environment variables loaded successfully');
+console.log('MongoDB Cluster:', process.env.MONGODB_CLUSTER);
 
 // Middleware
-app.use(express.json({ limit: "50mb" })); // Increased limit for base64 images
-app.use(express.urlencoded({ extended: true, limit: "50mb" })); // For form data
+app.use(express.json({ limit: "50mb" }));
+app.use(express.urlencoded({ extended: true, limit: "50mb" }));
 app.use(cors());
 
 // Routes
@@ -46,23 +52,19 @@ app.get("/", (req, res) => {
   });
 });
 
-// Connect to mongodb database
+// Connect to MongoDB database
 mongoose
-  .connect(
-    "mongodb+srv://adminUser:5NW3N2LlFEBnLE4G@cluster0.llcjvmk.mongodb.net/crowd-balance-db"
-  )
+  .connect(MONGODB_URI)
   .then(() => {
     console.log("Connected to MongoDB!");
     return app.listen(PORT);
   })
   .then(() => {
-    // Start the server only after the database connected
     console.log(`Server running on port: ${PORT}`);
-
     require("./cronJobs/cleanupJob");
-    console.log("Going to cornJobs");
-
+    console.log("Cron jobs initialized");
   })
   .catch((err) => {
-    console.log(err);
+    console.error("Error starting server:", err);
+    process.exit(1);
   });
