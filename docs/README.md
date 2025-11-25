@@ -112,12 +112,13 @@ The app supports two types of users: **Organizers** and **Main Panel**.
   - Android APK (fully built and tested)
   - Expo Go client (iOS and Android)
   
-**Download Android APK:**
-Click here to Download the APK
-[DOWNLOAD APP](https://expo.dev/accounts/ridmal/projects/engex/builds/3536c7f0-b193-4842-bd56-1c829f0f3b87)
+**Download Android APK:**  
 
-![APP DOWNLOAD QR](./images/appQR.jpeg)
-Sacn QR to Download the APK
+[DOWNLOAD APP](https://expo.dev/accounts/ridmal/projects/engex/builds/3536c7f0-b193-4842-bd56-1c829f0f3b87)  
+*Click here to Download the APK*
+
+![APP DOWNLOAD QR](./images/appQR.jpeg)  
+*Scan QR to Download the APK*
 
 *Note: iOS deployment was successfully tested via Expo Go app, but a dedicated iOS IPA was not built due to platform constraints and limitations.*
 
