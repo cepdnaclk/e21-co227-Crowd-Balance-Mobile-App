@@ -88,6 +88,9 @@ The app supports two types of users: **Organizers** and **Main Panel**.
 
 ## Software Architecture
 
+
+![Architecture](./images/architecture.png)
+
 ### Three-Tier Architecture
 
 **Frontend (React Native + Expo):**
