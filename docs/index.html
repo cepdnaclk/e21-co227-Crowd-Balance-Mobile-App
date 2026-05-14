@@ -1,0 +1,2231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>EngEx CrowdBalance — Smart Crowd Management</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Lora:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --bg: #f5f7ff;
+    --bg2: #eef1fb;
+    --surface: #ffffff;
+    --surface2: #f0f4ff;
+    --border: rgba(26,86,219,0.12);
+    --border-strong: rgba(26,86,219,0.25);
+
+    --blue-50: #eff6ff;
+    --blue-100: #dbeafe;
+    --blue-200: #bfdbfe;
+    --blue-400: #60a5fa;
+    --blue-500: #3b82f6;
+    --blue-600: #2563eb;
+    --blue-700: #1d4ed8;
+    --blue-800: #1e40af;
+    --blue-900: #1e3a8a;
+
+    --indigo: #4f46e5;
+    --purple: #7c3aed;
+    --green: #059669;
+    --green-light: #d1fae5;
+    --red: #dc2626;
+    --red-light: #fee2e2;
+    --amber: #d97706;
+    --amber-light: #fef3c7;
+
+    --text: #0f172a;
+    --text-secondary: #334155;
+    --text-muted: #64748b;
+    --text-faint: #94a3b8;
+
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+    --shadow-md: 0 4px 16px rgba(26,86,219,0.08), 0 2px 8px rgba(0,0,0,0.06);
+    --shadow-lg: 0 12px 40px rgba(26,86,219,0.12), 0 4px 16px rgba(0,0,0,0.08);
+    --shadow-xl: 0 24px 60px rgba(26,86,219,0.16), 0 8px 24px rgba(0,0,0,0.1);
+
+    --font-display: 'Outfit', sans-serif;
+    --font-serif: 'Lora', serif;
+    --font-mono: 'JetBrains Mono', monospace;
+
+    --radius: 16px;
+    --radius-sm: 10px;
+    --radius-lg: 24px;
+    --radius-pill: 100px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-display);
+    font-size: 16px;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--blue-400); border-radius: 2px; }
+
+  /* ─── NAV ─── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    height: 68px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 clamp(1.5rem, 5vw, 5rem);
+    background: rgba(245,247,255,0.88);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+  }
+
+.nav-logo {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+}
+
+.nav-logo img {
+  height: 60%; 
+  width: auto;
+}
+
+
+  .nav-logo-text {
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--text);
+    letter-spacing: -0.02em;
+  }
+
+  .nav-logo-text span { color: var(--blue-600); }
+
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    list-style: none;
+  }
+
+  .nav-links a {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--blue-600); }
+
+  .nav-cta {
+    background: var(--blue-600) !important;
+    color: white !important;
+    padding: 9px 22px;
+    border-radius: var(--radius-pill);
+    font-weight: 600 !important;
+    font-size: 0.85rem !important;
+    transition: all 0.2s !important;
+    box-shadow: 0 2px 12px rgba(37,99,235,0.3) !important;
+  }
+
+  .nav-cta:hover {
+    background: var(--blue-700) !important;
+    box-shadow: 0 4px 20px rgba(37,99,235,0.4) !important;
+    transform: translateY(-1px);
+  }
+
+  /* ─── HERO ─── */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    padding: 80px clamp(1.5rem, 6vw, 6rem) 60px;
+    gap: 4rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -200px; right: -200px;
+    width: 700px; height: 700px;
+    background: radial-gradient(circle, rgba(37,99,235,0.07) 0%, transparent 65%);
+    pointer-events: none;
+  }
+
+  .hero::after {
+    content: '';
+    position: absolute;
+    bottom: -100px; left: -100px;
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(79,70,229,0.06) 0%, transparent 65%);
+    pointer-events: none;
+  }
+
+  /* Blueprint grid bg */
+  .hero-grid-bg {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(37,99,235,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(37,99,235,0.04) 1px, transparent 1px);
+    background-size: 48px 48px;
+    mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black, transparent);
+    pointer-events: none;
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 2;
+    flex: 1;
+    max-width: 560px;
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--blue-50);
+    border: 1px solid var(--blue-200);
+    border-radius: var(--radius-pill);
+    padding: 6px 16px 6px 10px;
+    font-size: 0.78rem;
+    color: var(--blue-700);
+    font-weight: 500;
+    margin-bottom: 1.75rem;
+    animation: fade-up 0.6s ease both;
+  }
+
+  .badge-dot {
+    width: 7px; height: 7px;
+    background: var(--blue-500);
+    border-radius: 50%;
+    animation: pulse-dot 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse-dot {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(37,99,235,0.35); }
+    50% { box-shadow: 0 0 0 5px rgba(37,99,235,0); }
+  }
+
+  .hero-title {
+    font-size: clamp(2.8rem, 5.5vw, 4.2rem);
+    font-weight: 800;
+    line-height: 1.06;
+    letter-spacing: -0.03em;
+    margin-bottom: 0.5rem;
+    color: var(--text);
+    animation: fade-up 0.6s 0.1s ease both;
+  }
+
+  .hero-title-italic {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 600;
+    color: var(--blue-600);
+    letter-spacing: -0.01em;
+  }
+
+  .hero-sub {
+    color: var(--text-muted);
+    font-size: 1.05rem;
+    font-weight: 400;
+    max-width: 460px;
+    margin-bottom: 2.25rem;
+    line-height: 1.75;
+    animation: fade-up 0.6s 0.2s ease both;
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: 0.875rem;
+    flex-wrap: wrap;
+    animation: fade-up 0.6s 0.3s ease both;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 13px 26px;
+    border-radius: var(--radius-pill);
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-decoration: none;
+    cursor: pointer;
+    border: none;
+    transition: all 0.22s;
+    font-family: var(--font-display);
+  }
+
+  .btn-primary {
+    background: var(--blue-600);
+    color: white;
+    box-shadow: 0 4px 20px rgba(37,99,235,0.32);
+  }
+
+  .btn-primary:hover {
+    background: var(--blue-700);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 28px rgba(37,99,235,0.42);
+  }
+
+  .btn-outline {
+    background: var(--surface);
+    color: var(--text-secondary);
+    border: 1.5px solid var(--border-strong);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .btn-outline:hover {
+    border-color: var(--blue-500);
+    color: var(--blue-600);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+  }
+
+  /* ─── HERO VISUAL ─── */
+  .hero-visual {
+    position: relative;
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 580px;
+    animation: fade-up 0.8s 0.35s ease both;
+    z-index: 2;
+    margin-top: 60px;
+  }
+
+  .phone-scene {
+    position: relative;
+    width: 320px;
+    height: 620px;
+  }
+
+  .phone-outer {
+    position: relative;
+    width: 260px;
+    height: 560px;
+    margin: 0 auto;
+    background: var(--surface);
+    border-radius: 44px;
+    border: 2px solid rgba(37,99,235,0.2);
+    box-shadow:
+      0 0 0 6px rgba(37,99,235,0.06),
+      0 40px 80px rgba(37,99,235,0.14),
+      0 16px 40px rgba(0,0,0,0.08);
+    overflow: hidden;
+    animation: phone-float 6s ease-in-out infinite;
+  }
+
+  @keyframes phone-float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-14px); }
+  }
+
+  .phone-notch {
+    position: absolute;
+    top: 0; left: 50%;
+    transform: translateX(-50%);
+    width: 90px; height: 26px;
+    background: var(--text);
+    border-radius: 0 0 18px 18px;
+    z-index: 10;
+  }
+
+  .phone-screen {
+    position: absolute;
+    inset: 0;
+    background: #f8faff;
+    overflow: hidden;
+  }
+
+  /* Phone header bar matching the app's blue header */
+  .phone-app-header {
+    background: var(--blue-600);
+    padding: 36px 16px 14px;
+    color: white;
+  }
+
+  .phone-app-welcome {
+    font-size: 9px;
+    font-weight: 700;
+    margin-bottom: 2px;
+  }
+
+  .phone-app-role {
+    font-size: 7px;
+    opacity: 0.8;
+  }
+
+  .phone-app-body {
+    padding: 14px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+    overflow: hidden;
+  }
+
+  .phone-alert-btn {
+    background: var(--red);
+    border-radius: 8px;
+    padding: 9px;
+    text-align: center;
+    font-size: 8px;
+    color: white;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+  }
+
+  .phone-section-label {
+    font-size: 7px;
+    color: var(--text-muted);
+    font-weight: 600;
+  }
+
+  .phone-person-card {
+    background: white;
+    border-radius: 10px;
+    border: 1px solid #e2e8f0;
+    padding: 9px 10px;
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+  }
+
+  .phone-avatar {
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    background: var(--blue-600);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 9px;
+    font-weight: 700;
+    color: white;
+  }
+
+  .phone-person-name { font-size: 8.5px; font-weight: 700; color: var(--text); }
+  .phone-person-detail { font-size: 7px; color: var(--text-muted); margin-top: 1px; }
+
+  .phone-active-badge {
+    font-size: 6.5px;
+    padding: 2px 6px;
+    border-radius: 20px;
+    background: #fee2e2;
+    color: #dc2626;
+    border: 1px solid #fecaca;
+    font-weight: 700;
+    margin-left: auto;
+  }
+
+  .phone-found-btn {
+    margin-top: 5px;
+    background: #d1fae5;
+    border: 1px solid #6ee7b7;
+    border-radius: 5px;
+    padding: 3px 8px;
+    font-size: 7px;
+    color: #059669;
+    font-weight: 700;
+    text-align: center;
+  }
+
+  .phone-nav-row {
+    display: flex;
+    gap: 5px;
+    margin-top: 2px;
+  }
+
+  .phone-nav-btn {
+    flex: 1;
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 7px;
+    padding: 8px 4px;
+    font-size: 7px;
+    color: var(--text-muted);
+    font-weight: 600;
+    text-align: center;
+  }
+
+  .phone-nav-btn.active {
+    background: var(--blue-600);
+    border-color: var(--blue-600);
+    color: white;
+  }
+
+  /* Floating cards */
+  .float-card {
+    position: absolute;
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: var(--radius-sm);
+    padding: 12px 15px;
+    box-shadow: var(--shadow-lg);
+    font-size: 0.78rem;
+  }
+
+  .float-card-1 { top: 50px; left: -30px; animation: card-float 7s ease-in-out infinite; }
+  .float-card-2 { bottom: 100px; right: -30px; animation: card-float 9s ease-in-out infinite reverse; }
+  .float-card-3 { top: 280px; left: -40px; animation: card-float 11s ease-in-out infinite 1s; }
+
+  @keyframes card-float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+
+  .float-card-label { font-size: 0.65rem; color: var(--text-faint); font-family: var(--font-mono); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 3px; }
+  .float-card-value { font-weight: 800; font-size: 1.2rem; line-height: 1; }
+  .float-card-sub { font-size: 0.65rem; color: var(--text-muted); margin-top: 2px; }
+
+  .val-blue { color: var(--blue-600); }
+  .val-green { color: var(--green); }
+  .val-amber { color: var(--amber); }
+
+  /* Alert float card */
+  .mini-alert {
+    position: absolute;
+    top: 30px; right: -15px;
+    background: white;
+    border: 1px solid #fecaca;
+    border-left: 3px solid var(--red);
+    border-radius: var(--radius-sm);
+    padding: 10px 13px;
+    box-shadow: var(--shadow-md);
+    max-width: 175px;
+    animation: card-float 7s ease-in-out infinite;
+    z-index: 20;
+  }
+
+  .mini-alert-header {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.65rem;
+    color: var(--red);
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    margin-bottom: 5px;
+  }
+
+  .mini-alert-dot {
+    width: 5px; height: 5px;
+    background: var(--red);
+    border-radius: 50%;
+    animation: pulse-dot 1.5s ease-in-out infinite;
+  }
+
+  .mini-alert-body { font-size: 0.78rem; color: var(--text); font-weight: 600; }
+  .mini-alert-sub { font-size: 0.68rem; color: var(--text-muted); margin-top: 2px; }
+
+  /* Crowd bars float */
+  .crowd-indicator {
+    position: absolute;
+    bottom: 80px; left: -20px;
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: var(--radius-sm);
+    padding: 12px 15px;
+    box-shadow: var(--shadow-lg);
+    min-width: 155px;
+    animation: card-float 9s ease-in-out infinite 0.5s;
+    z-index: 20;
+  }
+
+  .crowd-indicator-title { font-size: 0.63rem; color: var(--text-muted); font-family: var(--font-mono); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 8px; }
+
+  .crowd-bars { display: flex; flex-direction: column; gap: 5px; }
+
+  .crowd-bar-row { display: flex; align-items: center; gap: 7px; font-size: 0.65rem; }
+  .crowd-bar-label { color: var(--text-secondary); width: 48px; font-weight: 500; }
+  .crowd-bar-track { flex: 1; height: 5px; background: #f1f5f9; border-radius: 3px; overflow: hidden; }
+  .crowd-bar-fill { height: 100%; border-radius: 3px; }
+  .crowd-bar-pct { color: var(--text-faint); font-family: var(--font-mono); font-size: 0.6rem; }
+
+  /* ─── SECTIONS ─── */
+  section { position: relative; z-index: 1; }
+
+  .section-pad { padding: 90px clamp(1.5rem, 6vw, 6rem); }
+
+  .section-header { text-align: center; margin-bottom: 64px; }
+
+  .section-eyebrow {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--blue-500);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    margin-bottom: 0.875rem;
+    opacity: 0;
+    transform: translateY(16px);
+    transition: all 0.5s ease;
+  }
+
+  .section-title {
+    font-size: clamp(2rem, 3.8vw, 2.9rem);
+    font-weight: 800;
+    line-height: 1.12;
+    letter-spacing: -0.025em;
+    margin-bottom: 1rem;
+    color: var(--text);
+    opacity: 0;
+    transform: translateY(16px);
+    transition: all 0.5s 0.08s ease;
+  }
+
+  .section-title .serif {
+    font-family: var(--font-serif);
+    font-weight: 600;
+    font-style: italic;
+    color: var(--blue-600);
+  }
+
+  .section-desc {
+    color: var(--text-muted);
+    max-width: 520px;
+    margin: 0 auto;
+    font-size: 0.975rem;
+    line-height: 1.75;
+    opacity: 0;
+    transform: translateY(16px);
+    transition: all 0.5s 0.16s ease;
+  }
+
+  .visible .section-eyebrow,
+  .visible .section-title,
+  .visible .section-desc {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ─── STATS BAR ─── */
+  .stats-bar {
+    padding: 40px clamp(1.5rem, 6vw, 6rem);
+    background: var(--blue-600);
+    display: flex;
+    justify-content: center;
+    gap: clamp(2.5rem, 6vw, 7rem);
+    flex-wrap: wrap;
+  }
+
+  .stat-item {
+    text-align: center;
+    opacity: 0;
+    transform: translateY(16px);
+    transition: all 0.5s ease;
+  }
+
+  .stat-item.vis { opacity: 1; transform: translateY(0); }
+
+  .stat-number {
+    font-size: 2.4rem;
+    font-weight: 800;
+    color: white;
+    letter-spacing: -0.03em;
+    line-height: 1;
+  }
+
+  .stat-label {
+    font-size: 0.75rem;
+    color: rgba(255,255,255,0.65);
+    margin-top: 5px;
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+    font-family: var(--font-mono);
+  }
+
+  /* ─── FEATURES ─── */
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.25rem;
+  }
+
+  .feature-card {
+    background: var(--surface);
+    border-radius: var(--radius-lg);
+    padding: 36px 32px;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-sm);
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    opacity: 0;
+    transform: translateY(24px);
+  }
+
+  .feature-card::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    background: linear-gradient(90deg, var(--blue-500), var(--indigo));
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .feature-card:hover { box-shadow: var(--shadow-lg); transform: translateY(-4px) !important; }
+  .feature-card:hover::after { opacity: 1; }
+  .feature-card.vis { opacity: 1; transform: translateY(0); }
+
+  .feature-icon-wrap {
+    width: 52px; height: 52px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.35rem;
+    margin-bottom: 1.4rem;
+  }
+
+  .icon-blue { background: var(--blue-50); border: 1px solid var(--blue-200); }
+  .icon-green { background: #ecfdf5; border: 1px solid #a7f3d0; }
+  .icon-amber { background: #fffbeb; border: 1px solid #fde68a; }
+  .icon-purple { background: #f5f3ff; border: 1px solid #ddd6fe; }
+
+  .feature-title {
+    font-weight: 700;
+    font-size: 1.1rem;
+    margin-bottom: 0.65rem;
+    color: var(--text);
+    letter-spacing: -0.02em;
+  }
+
+  .feature-desc {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    line-height: 1.72;
+  }
+
+  .feature-tags {
+    display: flex;
+    gap: 7px;
+    flex-wrap: wrap;
+    margin-top: 1.25rem;
+  }
+
+  .tag {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    padding: 3px 10px;
+    border-radius: var(--radius-pill);
+    font-weight: 500;
+  }
+
+  .tag-blue { background: var(--blue-50); color: var(--blue-700); border: 1px solid var(--blue-200); }
+  .tag-green { background: #ecfdf5; color: #065f46; border: 1px solid #a7f3d0; }
+  .tag-purple { background: #f5f3ff; color: #5b21b6; border: 1px solid #ddd6fe; }
+  .tag-amber { background: #fffbeb; color: #92400e; border: 1px solid #fde68a; }
+
+  /* ─── ARCHITECTURE ─── */
+  .arch-section { background: var(--bg2); }
+
+  .arch-diagram { max-width: 820px; margin: 0 auto; }
+
+  .arch-layers {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-md);
+  }
+
+  .arch-layer {
+    display: flex;
+    align-items: stretch;
+    min-height: 100px;
+    opacity: 0;
+    transform: translateX(-24px);
+    transition: all 0.55s ease;
+  }
+
+  .arch-layer.vis { opacity: 1; transform: translateX(0); }
+
+  .arch-layer-label {
+    width: 130px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px 14px;
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    font-weight: 500;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    gap: 7px;
+    border-right: 1px solid var(--border);
+  }
+
+  .layer-fe { background: var(--blue-50); color: var(--blue-700); }
+  .layer-be { background: #f5f3ff; color: #5b21b6; }
+  .layer-db { background: #ecfdf5; color: #065f46; }
+
+  .arch-layer-content {
+    flex: 1;
+    padding: 24px 28px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+    background: var(--surface);
+  }
+
+  .arch-chip {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 7px 14px;
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+  }
+
+  .chip-dot { width: 7px; height: 7px; border-radius: 50%; }
+  .dot-blue { background: var(--blue-500); }
+  .dot-indigo { background: var(--indigo); }
+  .dot-green { background: var(--green); }
+  .dot-amber { background: var(--amber); }
+  .dot-cyan { background: #0891b2; }
+
+  .arch-connector {
+    text-align: center;
+    padding: 8px;
+    font-size: 0.7rem;
+    color: var(--text-faint);
+    font-family: var(--font-mono);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    background: var(--bg2);
+  }
+
+  .connector-line { height: 1px; flex: 1; background: var(--border); }
+
+  /* ─── SCREENS SECTION ─── */
+  .screens-section { background: var(--bg); overflow: hidden; }
+
+  .scroll-hint {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    justify-content: flex-end;
+    margin-bottom: 10px;
+    font-size: 0.72rem;
+    color: var(--text-faint);
+    font-family: var(--font-mono);
+  }
+
+  .screens-scroll {
+    display: flex;
+    gap: 22px;
+    padding: 20px 0 44px;
+    overflow-x: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--blue-300) transparent;
+    scroll-snap-type: x mandatory;
+  }
+
+  .screen-showcase {
+    flex-shrink: 0;
+    scroll-snap-align: start;
+    width: 210px;
+    opacity: 0;
+    transform: translateY(32px) scale(0.96);
+    transition: all 0.5s ease;
+  }
+
+  .screen-showcase.vis { opacity: 1; transform: translateY(0) scale(1); }
+
+  .screen-frame {
+    background: var(--text);
+    border-radius: 32px;
+    border: 2px solid rgba(255,255,255,0.1);
+    overflow: hidden;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.22), 0 6px 20px rgba(0,0,0,0.12);
+    aspect-ratio: 9/19;
+    position: relative;
+  }
+
+  /* The real screen image inside the frame */
+  .screen-frame-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 30px;
+  }
+
+  /* Placeholder when image not provided */
+  /* .screen-placeholder {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(145deg, #1a1f2e, #0f1420);
+    gap: 10px;
+    padding: 20px;
+  } */
+/* 
+  .screen-placeholder-icon {
+    width: 48px; height: 48px;
+    border-radius: 12px;
+    background: rgba(37,99,235,0.2);
+    border: 1px solid rgba(37,99,235,0.35);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+  } */
+
+  /* .screen-placeholder-name {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: rgba(255,255,255,0.7);
+    text-align: center;
+  } */
+
+  /* .screen-placeholder-hint {
+    font-size: 0.65rem;
+    color: rgba(255,255,255,0.3);
+    font-family: var(--font-mono);
+    text-align: center;
+    line-height: 1.5;
+  } */
+
+  .screen-label-tag {
+    margin-top: 12px;
+    text-align: center;
+    font-size: 0.74rem;
+    color: var(--text-muted);
+    font-weight: 500;
+  }
+
+  /* ─── WORKFLOW ─── */
+  .workflow-section { background: var(--bg2); }
+
+  .workflow-steps {
+    max-width: 680px;
+    margin: 0 auto;
+  }
+
+  .workflow-step {
+    display: flex;
+    gap: 22px;
+    position: relative;
+    opacity: 0;
+    transform: translateX(-24px);
+    transition: all 0.5s ease;
+  }
+
+  .workflow-step.vis { opacity: 1; transform: translateX(0); }
+
+  .workflow-step-line { display: flex; flex-direction: column; align-items: center; flex-shrink: 0; }
+
+  .step-num {
+    width: 42px; height: 42px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-mono);
+    font-weight: 700;
+    font-size: 0.82rem;
+    background: var(--blue-600);
+    color: white;
+    box-shadow: 0 4px 14px rgba(37,99,235,0.35);
+    flex-shrink: 0;
+    z-index: 1;
+  }
+
+  .step-connector {
+    width: 2px;
+    flex: 1;
+    min-height: 36px;
+    background: linear-gradient(180deg, var(--blue-200), transparent);
+    margin: 4px 0;
+  }
+
+  .workflow-step:last-child .step-connector { display: none; }
+
+  .workflow-step-body { padding: 0 0 36px; flex: 1; }
+
+  .step-title {
+    font-weight: 700;
+    font-size: 1.05rem;
+    margin-bottom: 0.4rem;
+    color: var(--text);
+    letter-spacing: -0.015em;
+    padding-top: 8px;
+  }
+
+  .step-desc {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    line-height: 1.72;
+  }
+
+  /* ─── TECH STACK ─── */
+  .stack-grid {
+    display: flex;
+    gap: 0.875rem;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .stack-pill {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 11px 18px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    box-shadow: var(--shadow-sm);
+    opacity: 0;
+    transform: translateY(16px);
+    transition: all 0.4s ease;
+  }
+
+  .stack-pill.vis { opacity: 1; transform: translateY(0); }
+
+  .stack-pill:hover {
+    border-color: var(--blue-300);
+    color: var(--blue-700);
+    background: var(--blue-50);
+    transform: translateY(-3px) !important;
+    box-shadow: var(--shadow-md);
+  }
+
+  .stack-emoji { font-size: 1.15rem; }
+
+  /* ─── TEAM ─── */
+  .team-section { background: var(--bg2); }
+
+  .team-grid {
+    display: flex;
+    gap: 1.25rem;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .team-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 28px 22px;
+  text-align: center;
+  width: 240px;
+  box-shadow: var(--shadow-sm);
+  opacity: 0;
+  transform: translateY(24px);
+  transition: all 0.5s ease;
+}
+
+.team-avatar-img {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: top;
+  border: 3px solid var(--blue-100);
+  box-shadow: 0 6px 18px rgba(37,99,235,0.18);
+  margin: 0 auto 1rem;
+  display: block;
+}
+
+.team-avatar {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--blue-500), var(--indigo));
+  margin: 0 auto 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  font-weight: 800;
+  color: white;
+  border: 3px solid var(--blue-100);
+  box-shadow: 0 6px 18px rgba(37,99,235,0.22);
+}
+
+
+  .team-card.vis { opacity: 1; transform: translateY(0); }
+
+  .team-card:hover {
+    border-color: var(--blue-300);
+    transform: translateY(-5px) !important;
+    box-shadow: var(--shadow-lg);
+  }
+
+
+  .team-name { font-weight: 700; font-size: 0.92rem; margin-bottom: 3px; letter-spacing: -0.01em; }
+  .team-id { font-family: var(--font-mono); font-size: 0.72rem; color: var(--blue-600); margin-bottom: 7px; }
+  .team-email { font-size: 0.72rem; color: var(--text-faint); }
+
+
+
+.team-social-links {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+
+.team-social-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.67rem;
+  font-weight: 600;
+  padding: 4px 9px;
+  border-radius: var(--radius-pill);
+  text-decoration: none;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  background: var(--bg2);
+  transition: all 0.2s;
+  letter-spacing: 0.01em;
+}
+
+.team-social-link:hover {
+  background: var(--blue-600);
+  color: white;
+  border-color: var(--blue-600);
+  transform: translateY(-2px);
+}
+
+.team-social-link.gh:hover  { background: #24292f; border-color: #24292f; }
+.team-social-link.li:hover  { background: #0a66c2; border-color: #0a66c2; }
+.team-social-link.pf:hover  { background: var(--indigo); border-color: var(--indigo); }
+
+  /* ─── DOWNLOAD CTA ─── */
+  .cta-section {
+    padding: 110px clamp(1.5rem, 6vw, 6rem);
+    text-align: center;
+    background: linear-gradient(135deg, var(--blue-800) 0%, var(--blue-600) 40%, var(--indigo) 100%);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cta-section::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+    background-size: 48px 48px;
+  }
+
+  .cta-content { position: relative; z-index: 1; }
+
+  .cta-title {
+    font-size: clamp(2rem, 4.5vw, 3.3rem);
+    font-weight: 800;
+    color: white;
+    letter-spacing: -0.03em;
+    margin-bottom: 1rem;
+    line-height: 1.1;
+  }
+
+  .cta-title .serif {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 600;
+  }
+
+  .cta-sub {
+    color: rgba(255,255,255,0.72);
+    font-size: 1rem;
+    margin-bottom: 2.75rem;
+    max-width: 440px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .cta-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+.download-card {
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.2);
+  backdrop-filter: blur(10px);
+  border-radius: var(--radius);
+  padding: 18px 36px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  text-decoration: none;
+  color: white;
+  transition: all 0.3s;
+  min-width: 215px;
+}
+
+  .download-card:hover {
+    background: rgba(255,255,255,0.18);
+    transform: translateY(-4px);
+    box-shadow: 0 16px 36px rgba(0,0,0,0.2);
+  }
+
+  .download-icon {
+    width: 42px; height: 42px;
+    border-radius: 11px;
+    background: rgba(255,255,255,0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.15rem;
+    flex-shrink: 0;
+  }
+
+  .download-label {
+    font-size: 0.7rem;
+    color: rgba(255,255,255,0.6);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-family: var(--font-mono);
+    margin-bottom: 2px;
+  }
+
+  .download-name { font-weight: 700; font-size: 0.92rem; }
+
+  /* ─── LIVE BADGE ─── */
+  .live-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: var(--radius-pill);
+    padding: 5px 14px;
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    color: rgba(255,255,255,0.8);
+    margin-bottom: 1.5rem;
+    display: inline-flex;
+  }
+
+  .live-dot {
+    width: 5px; height: 5px;
+    background: #34d399;
+    border-radius: 50%;
+    animation: pulse-green 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse-green {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(52,211,153,0.4); }
+    50% { box-shadow: 0 0 0 5px rgba(52,211,153,0); }
+  }
+
+  /* ─── FOOTER ─── */
+  .footer-links {
+    border-top: 1px solid var(--border);
+    padding: 56px clamp(1.5rem, 6vw, 6rem);
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 3rem;
+    flex-wrap: wrap;
+    background: var(--surface);
+  }
+
+  .footer-brand-name {
+    font-weight: 800;
+    font-size: 1.05rem;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.4rem;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+  }
+
+  .footer-brand-desc {
+    font-size: 0.84rem;
+    color: var(--text-muted);
+    line-height: 1.65;
+    max-width: 270px;
+  }
+
+  .footer-col-title {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    color: var(--text-faint);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    margin-bottom: 1rem;
+  }
+
+  .footer-list { list-style: none; display: flex; flex-direction: column; gap: 0.55rem; }
+
+  .footer-list a {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 0.875rem;
+    transition: color 0.2s;
+  }
+
+  .footer-list a:hover { color: var(--blue-600); }
+
+  .footer-bottom {
+    border-top: 1px solid var(--border);
+    padding: 20px clamp(1.5rem, 6vw, 6rem);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    background: var(--surface);
+  }
+
+  .footer-copy {
+    font-size: 0.78rem;
+    color: var(--text-faint);
+    font-family: var(--font-mono);
+  }
+
+  /* ─── DIVIDER ─── */
+  .divider { height: 1px; background: var(--border); margin: 0 clamp(1.5rem, 6vw, 6rem); }
+
+  /* ─── ANIMATIONS ─── */
+  @keyframes fade-up {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ─── SUPERVISOR CARD ─── */
+.supervisor-card {
+  text-align: center;
+  margin: 2.5rem auto 0;
+  margin-bottom: 48px;
+  padding: 30px 26px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  max-width: 480px;
+  box-shadow: var(--shadow-md);
+}
+
+.supervisor-avatar-img {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: top;
+  border: 3px solid var(--blue-100);
+  box-shadow: 0 8px 28px rgba(37,99,235,0.18);
+  margin: 0 auto 1.25rem;
+  display: block;
+}
+
+.supervisor-links {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+
+.supervisor-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.73rem;
+  font-weight: 600;
+  padding: 5px 13px;
+  border-radius: var(--radius-pill);
+  text-decoration: none;
+  border: 1px solid var(--border-strong);
+  color: var(--blue-600);
+  background: var(--blue-50);
+  transition: all 0.2s;
+}
+
+.supervisor-link:hover {
+  background: var(--blue-600);
+  color: white;
+  border-color: var(--blue-600);
+  transform: translateY(-2px);
+}
+
+  .supervisor-label {
+    font-size: 0.7rem;
+    color: var(--text-faint);
+    font-family: var(--font-mono);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 7px;
+  }
+
+  .supervisor-name { font-weight: 700; font-size: 0.98rem; margin-bottom: 4px; color: var(--text); }
+
+  .supervisor-role {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  margin-top: 2px;
+  margin-bottom: 8px;
+}
+
+  .supervisor-email { color: var(--blue-600); font-size: 0.82rem; text-decoration: none; }
+  .supervisor-email:hover { text-decoration: underline; }
+
+  /* ─── VIDEO ─── */
+  .video-section { background: var(--bg2); }
+
+  .video-wrapper { max-width: 820px; margin: 0 auto; position: relative; }
+
+  .video-frame {
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-xl);
+    aspect-ratio: 16/9;
+    background: var(--surface);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .video-placeholder { text-align: center; color: var(--text-muted); }
+
+  .video-play-btn {
+    width: 68px; height: 68px;
+    border-radius: 50%;
+    background: var(--blue-600);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+    box-shadow: 0 8px 24px rgba(37,99,235,0.38);
+    cursor: pointer;
+    font-size: 1.4rem;
+    color: white;
+    transition: all 0.2s;
+  }
+
+  .video-play-btn:hover { transform: scale(1.1); background: var(--blue-700); }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 768px) {
+    .hero { flex-direction: column; padding-top: 96px; text-align: center; gap: 2rem; }
+    .hero-content { max-width: 100%; }
+    .hero-sub, .hero-badge { margin-left: auto; margin-right: auto; }
+    .hero-actions { justify-content: center; }
+    .hero-visual { min-height: 360px; }
+    .phone-scene { transform: scale(0.8); }
+    .float-card, .mini-alert, .crowd-indicator { display: none; }
+    nav .nav-links { display: none; }
+    .arch-layer { flex-direction: column; }
+    .arch-layer-label { width: 100%; flex-direction: row; height: auto; padding: 10px 16px; border-right: none; border-bottom: 1px solid var(--border); }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══ NAV -->
+<nav>
+  <a class="nav-logo" href="#">
+     <img src="./images/logo-icon.png" alt="EngEx logo" >
+    <span class="nav-logo-text">EngEx <span>CrowdBalance</span></span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#features">Features</a></li>
+    <li><a href="#architecture">Architecture</a></li>
+    <li><a href="#screens">Screens</a></li>
+    <li><a href="#team">Team</a></li>
+    <li><a href="#download" class="nav-cta">Download App</a></li>
+  </ul>
+</nav>
+
+<!-- ═══ HERO -->
+<section class="hero">
+  <div class="hero-grid-bg"></div>
+
+  <div class="hero-content">
+    <div class="hero-badge">
+      <span class="badge-dot"></span>
+      PeraVerse · 75th Anniversary Exhibitions · University of Peradeniya
+    </div>
+
+    <h1 class="hero-title">
+      Keep Every Event<br/>
+      <span class="hero-title-italic">Safe &amp; Balanced</span>
+    </h1>
+
+    <p class="hero-sub">
+      A mobile platform built for large-scale exhibition management — real-time crowd monitoring, instant missing person alerts, car park tracking, and AI-powered support in a single app.
+    </p>
+
+    <div class="hero-actions">
+      <a href="https://expo.dev/accounts/ridmal/projects/engex/builds/3536c7f0-b193-4842-bd56-1c829f0f3b87" target="_blank" class="btn btn-primary">
+        ⬇ Download Android APK
+      </a>
+      <a href="https://github.com/cepdnaclk/e21-co227-Crowd-Balance-Mobile-App" target="_blank" class="btn btn-outline">
+        ⌥ View on GitHub
+      </a>
+    </div>
+  </div>
+
+  <!-- PHONE VISUAL -->
+  <div class="hero-visual">
+    <div class="phone-scene">
+
+      <div class="mini-alert">
+        <div class="mini-alert-header">
+          <div class="mini-alert-dot"></div>
+          MISSING PERSON ALERT
+        </div>
+        <div class="mini-alert-body">Deeshan · Age 23</div>
+        <div class="mini-alert-sub">📍 Near main entrance</div>
+      </div>
+
+      <div class="crowd-indicator">
+        <div class="crowd-indicator-title">Live Crowd Levels</div>
+        <div class="crowd-bars">
+          <div class="crowd-bar-row">
+            <span class="crowd-bar-label">Library</span>
+            <div class="crowd-bar-track">
+              <div class="crowd-bar-fill" style="width:35%;background:#059669"></div>
+            </div>
+            <span class="crowd-bar-pct">35%</span>
+          </div>
+          <div class="crowd-bar-row">
+            <span class="crowd-bar-label">Hall A</span>
+            <div class="crowd-bar-track">
+              <div class="crowd-bar-fill" style="width:78%;background:#d97706"></div>
+            </div>
+            <span class="crowd-bar-pct">78%</span>
+          </div>
+          <div class="crowd-bar-row">
+            <span class="crowd-bar-label">Samart</span>
+            <div class="crowd-bar-track">
+              <div class="crowd-bar-fill" style="width:95%;background:#dc2626"></div>
+            </div>
+            <span class="crowd-bar-pct">95%</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="phone-outer">
+        <div class="phone-notch"></div>
+        <div class="phone-screen">
+          <div class="phone-app-header">
+            <div class="phone-app-welcome">Welcome, Deeshan Wijesinghe 👋</div>
+            <div class="phone-app-role">Role: Organizer</div>
+          </div>
+          <div class="phone-app-body">
+            <div class="phone-alert-btn">🚨 Report Missing Person</div>
+
+            <div class="phone-section-label">All Missing Person Reports (2)</div>
+
+
+            <div class="phone-person-card">
+              <div class="phone-avatar">D</div>
+              <div style="flex:1">
+                <div style="display:flex;justify-content:space-between;align-items:center">
+                  <span class="phone-person-name">Deeshan</span>
+                  <span class="phone-active-badge">Active</span>
+                </div>
+                <div class="phone-person-detail">Age: 23 · Male</div>
+                <div class="phone-person-detail" style="color:#dc2626">📍 Near main entrance</div>
+                <div class="phone-found-btn">✓ PERSON FOUND</div>
+              </div>
+            </div>
+
+            <div class="phone-person-card">
+              <div class="phone-avatar">S</div>
+              <div style="flex:1">
+                <div style="display:flex;justify-content:space-between;align-items:center">
+                  <span class="phone-person-name">Shane</span>
+                  <span class="phone-active-badge">Active</span>
+                </div>
+                <div class="phone-person-detail">Age: 24 · Male</div>
+                <div class="phone-person-detail" style="color:#dc2626">📍 Near lecture hall 10</div>
+                <div class="phone-found-btn">✓ PERSON FOUND</div>
+              </div>
+            </div>
+
+            <div class="phone-nav-row">
+              <div class="phone-nav-btn active">Crowd Status</div>
+              <div class="phone-nav-btn">Car Parks</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="float-card float-card-1">
+        <div class="float-card-label">Organizers Online</div>
+        <div class="float-card-value val-blue">16</div>
+        <div class="float-card-sub">Active right now</div>
+      </div>
+
+      <div class="float-card float-card-2">
+        <div class="float-card-label">Car Parks</div>
+        <div class="float-card-value val-amber">4 / 6</div>
+        <div class="float-card-sub">Lots with space</div>
+      </div>
+
+      <div class="float-card float-card-3">
+        <div class="float-card-label">Response Time</div>
+        <div class="float-card-value val-green">&lt;2s</div>
+        <div class="float-card-sub">Real-time sync</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ STATS BAR -->
+<div class="stats-bar" id="stats-bar">
+  <div class="stat-item">
+    <div class="stat-number">4</div>
+    <div class="stat-label">Core Features</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-number">2</div>
+    <div class="stat-label">User Roles</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-number">&lt;2s</div>
+    <div class="stat-label">Real-time Sync</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-number">100%</div>
+    <div class="stat-label">Cloud Hosted</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-number">v 1.0</div>
+    <div class="stat-label">Published Nov 2025</div>
+  </div>
+</div>
+
+<!-- ═══ FEATURES -->
+<section class="section-pad" id="features">
+  <div class="section-header" id="features-header">
+    <h2 class="section-title">Everything Needed for<br/><span class="serif">Exhibition Management</span></h2>
+    <p class="section-desc">Four powerful modules working together in real time — keeping your event safe, organised, and running without friction.</p>
+  </div>
+
+  <div class="features-grid">
+
+    <div class="feature-card">
+      <div class="feature-icon-wrap icon-blue">📊</div>
+      <h3 class="feature-title">Real-Time Crowd Management</h3>
+      <p class="feature-desc">Organizers update crowd levels — Low, Moderate, or High — for their assigned area instantly. The main panel receives live data and can reassign staff to hotspots as conditions change on the ground.</p>
+      <div class="feature-tags">
+        <span class="tag tag-blue">Real-time Push</span>
+        <span class="tag tag-blue">Role-based</span>
+        <span class="tag tag-green">Live Dashboard</span>
+      </div>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon-wrap icon-purple">🚨</div>
+      <h3 class="feature-title">Missing Person Alert System</h3>
+      <p class="feature-desc">Raise high-priority alerts with name, age, gender, photo, and last seen location. Every organizer on the ground sees the alert immediately. One tap marks the person as found and closes the report.</p>
+      <div class="feature-tags">
+        <span class="tag tag-purple">Instant Broadcast</span>
+        <span class="tag tag-purple">Photo Upload</span>
+        <span class="tag tag-green">One-tap Resolve</span>
+      </div>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon-wrap icon-amber">🅿</div>
+      <h3 class="feature-title">Car Park Management</h3>
+      <p class="feature-desc">Tap + or − to update vehicle counts as cars enter and exit. The main panel sees capacity and availability across all lots in real time, and can add or remove lots dynamically as the event demands.</p>
+      <div class="feature-tags">
+        <span class="tag tag-amber">Capacity Tracking</span>
+        <span class="tag tag-amber">Dynamic Lots</span>
+        <span class="tag tag-blue">Overflow Prevention</span>
+      </div>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon-wrap icon-green">🤖</div>
+      <h3 class="feature-title">AI Chatbot Support</h3>
+      <p class="feature-desc">Powered by n8n workflow automation, the chatbot answers common queries about event schedules, hall locations, and general exhibition information — available on the Peraverse web platform and within the mobile dashboard.</p>
+      <div class="feature-tags">
+        <span class="tag tag-green">n8n Automation</span>
+        <span class="tag tag-green">Knowledge Base</span>
+        <span class="tag tag-purple">Web + Mobile</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ ARCHITECTURE -->
+<section class="section-pad arch-section" id="architecture">
+  <div class="section-header" id="arch-header">
+    <h2 class="section-title">Three-Tier<br/><span class="serif">Architecture</span></h2>
+    <p class="section-desc">A clean separation of concerns built for reliability, scalability, and real-time performance at scale.</p>
+  </div>
+
+  <div class="arch-diagram">
+    <div class="arch-layers">
+
+      <div class="arch-layer" id="al-1">
+        <div class="arch-layer-label layer-fe">
+          <span>Frontend</span>
+        </div>
+        <div class="arch-layer-content">
+          <div class="arch-chip"><span class="chip-dot dot-blue"></span>React Native</div>
+          <div class="arch-chip"><span class="chip-dot dot-cyan"></span>Expo Router</div>
+          <div class="arch-chip"><span class="chip-dot dot-blue"></span>TailwindCSS</div>
+          <div class="arch-chip"><span class="chip-dot dot-indigo"></span>Expo Notifications</div>
+          <div class="arch-chip"><span class="chip-dot dot-cyan"></span>AsyncStorage</div>
+        </div>
+      </div>
+
+      <div class="arch-connector">
+        <div class="connector-line"></div>
+        <span>RESTful API · JSON · HTTPS</span>
+        <div class="connector-line"></div>
+      </div>
+
+      <div class="arch-layer" id="al-2">
+        <div class="arch-layer-label layer-be">
+          <span>Backend</span>
+        </div>
+        <div class="arch-layer-content">
+          <div class="arch-chip"><span class="chip-dot dot-indigo"></span>Node.js</div>
+          <div class="arch-chip"><span class="chip-dot dot-indigo"></span>Express.js</div>
+          <div class="arch-chip"><span class="chip-dot dot-amber"></span>MVC Pattern</div>
+          <div class="arch-chip"><span class="chip-dot dot-blue"></span>Microsoft Azure</div>
+          <div class="arch-chip"><span class="chip-dot dot-green"></span>JWT Auth</div>
+          <div class="arch-chip"><span class="chip-dot dot-cyan"></span>n8n Automation</div>
+        </div>
+      </div>
+
+      <div class="arch-connector">
+        <div class="connector-line"></div>
+        <span>Mongoose ODM · Atlas Driver</span>
+        <div class="connector-line"></div>
+      </div>
+
+      <div class="arch-layer" id="al-3">
+        <div class="arch-layer-label layer-db">
+          <span>Database</span>
+        </div>
+        <div class="arch-layer-content">
+          <div class="arch-chip"><span class="chip-dot dot-green"></span>MongoDB Atlas</div>
+          <div class="arch-chip"><span class="chip-dot dot-green"></span>Cloud Managed</div>
+          <div class="arch-chip"><span class="chip-dot dot-amber"></span>Secure Storage</div>
+          <div class="arch-chip"><span class="chip-dot dot-cyan"></span>Real-time Sync</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══ APP SCREENS -->
+<section class="section-pad screens-section" id="screens">
+  <div class="section-header" id="screens-header">
+    <h2 class="section-title">Designed for<br/><span class="serif">Field Organizers</span></h2>
+    <p class="section-desc">Clean, intuitive interfaces built for high-pressure, real-time use — whether you're monitoring the crowd or resolving a missing person alert.</p>
+  </div>
+
+  <div class="scroll-hint">← Scroll to explore screens →</div>
+
+  <div class="screens-scroll" id="screens-scroll">
+
+    
+
+    <!-- Screen 1: Login -->
+    <div class="screen-showcase" id="sc-0">
+      <div class="screen-frame">
+        <img class="screen-frame-img" src="./images/screens/login.png" alt="Login Screen"
+          onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+      </div>
+      <div class="screen-label-tag">Login Screen</div>
+    </div>
+
+    <!-- Screen 2: Register -->
+    <div class="screen-showcase" id="sc-1">
+      <div class="screen-frame">
+        <img class="screen-frame-img" src="./images/screens/register.png" alt="Register Screen"
+          onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+      </div>
+      <div class="screen-label-tag">Register Screen</div>
+    </div>
+
+    <!-- Screen 3: Main Dashboard -->
+    <div class="screen-showcase" id="sc-2">
+      <div class="screen-frame">
+        <img class="screen-frame-img" src="./images/screens/dashboard.png" alt="Main Dashboard"
+          onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+      </div>
+      <div class="screen-label-tag">Main Dashboard</div>
+    </div>
+
+    <!-- Screen 4: Crowd Status -->
+    <div class="screen-showcase" id="sc-3">
+      <div class="screen-frame">
+        <img class="screen-frame-img" src="./images/screens/crowd-status.png" alt="Crowd Status"
+          onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+      </div>
+      <div class="screen-label-tag">Crowd Status</div>
+    </div>
+
+    <!-- Screen 5: Assign Organizers -->
+    <div class="screen-showcase" id="sc-4">
+      <div class="screen-frame">
+        <img class="screen-frame-img" src="./images/screens/assign-organizers.png" alt="Assign Organizers"
+          onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+      </div>
+      <div class="screen-label-tag">Assign Organizers</div>
+    </div>
+
+    <!-- Screen 6: Report Missing Person -->
+    <div class="screen-showcase" id="sc-5">
+      <div class="screen-frame">
+        <img class="screen-frame-img" src="./images/screens/missing-person.png" alt="Report Missing Person"
+          onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+      </div>
+      <div class="screen-label-tag">Report Missing Person</div>
+    </div>
+
+    <!-- Screen 7: Car Parks -->
+    <div class="screen-showcase" id="sc-6">
+      <div class="screen-frame">
+        <img class="screen-frame-img" src="./images/screens/car-parks.png" alt="Car Park Management"
+          onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+        <div class="screen-placeholder">
+          <div class="screen-placeholder-icon">🅿</div>
+          <div class="screen-placeholder-name">Car Park Management</div>
+          <div class="screen-placeholder-hint">Replace src with<br/>screens/car-parks.png</div>
+        </div>
+      </div>
+      <div class="screen-label-tag">Car Park Management</div>
+    </div>
+
+    <!-- Screen 8: AI Chatbot -->
+    <div class="screen-showcase" id="sc-7">
+      <div class="screen-frame">
+        <img class="screen-frame-img" src="./images/screens/chatbot.png" alt="AI Chatbot"
+          onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+        <div class="screen-placeholder">
+          <div class="screen-placeholder-icon">💬</div>
+          <div class="screen-placeholder-name">AI Chatbot</div>
+          <div class="screen-placeholder-hint">Replace src with<br/>screens/chatbot.png</div>
+        </div>
+      </div>
+      <div class="screen-label-tag">AI Chatbot</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ VIDEO -->
+<div class="divider"></div>
+<section class="section-pad video-section" id="demo">
+  <div class="section-header" id="video-header">
+    <h2 class="section-title">Watch the App<br/><span class="serif">Come to Life</span></h2>
+    <p class="section-desc">See real-time crowd management, missing person alerts, and organizer assignment working end-to-end.</p>
+  </div>
+
+  <div class="video-wrapper">
+    <div class="video-frame" id="video-frame">
+      <div class="video-placeholder" id="video-placeholder">
+        <div class="video-play-btn" onclick="loadVideo()">▶</div>
+        <div style="font-weight:700;font-size:1rem;color:var(--text);margin-bottom:5px">App Demo — Full Walkthrough</div>
+        <div style="margin-top:14px;font-family:var(--font-mono);font-size:0.72rem;color:var(--text-faint)">Click to play</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ HOW IT WORKS -->
+<section class="section-pad workflow-section" id="workflow">
+  <div class="section-header" id="workflow-header">
+    <h2 class="section-title">From Install to<br/><span class="serif">Full Control</span></h2>
+    <p class="section-desc">Up and running in minutes — no steep learning curve, no guesswork.</p>
+  </div>
+
+  <div class="workflow-steps">
+
+    <div class="workflow-step" id="ws-0">
+      <div class="workflow-step-line">
+        <div class="step-num">01</div>
+        <div class="step-connector"></div>
+      </div>
+      <div class="workflow-step-body">
+        <h3 class="step-title">Download &amp; Install the App</h3>
+        <p class="step-desc">Download the Android APK directly from Expo using the link below, or use Expo Go on an iPhone. An active internet connection is required to run the app.</p>
+      </div>
+    </div>
+
+    <div class="workflow-step" id="ws-1">
+      <div class="workflow-step-line">
+        <div class="step-num">02</div>
+        <div class="step-connector"></div>
+      </div>
+      <div class="workflow-step-body">
+        <h3 class="step-title">Create Your Account &amp; Choose a Role</h3>
+        <p class="step-desc">Register with your full name, email, and phone number. Select your role — <strong>Organizer</strong> for ground-level staff, or <strong>Main Panel</strong> for control room personnel. Each role unlocks a distinct set of features.</p>
+      </div>
+    </div>
+
+    <div class="workflow-step" id="ws-2">
+      <div class="workflow-step-line">
+        <div class="step-num">03</div>
+        <div class="step-connector"></div>
+      </div>
+      <div class="workflow-step-body">
+        <h3 class="step-title">Monitor &amp; Update Crowd Levels in Real Time</h3>
+        <p class="step-desc">Organizers head to their assigned areas and mark the crowd as Low, Moderate, or High from the Crowd Status page. The main panel sees every update the moment it happens and can reassign staff as situations evolve.</p>
+      </div>
+    </div>
+
+    <div class="workflow-step" id="ws-3">
+      <div class="workflow-step-line">
+        <div class="step-num">04</div>
+        <div class="step-connector"></div>
+      </div>
+      <div class="workflow-step-body">
+        <h3 class="step-title">Raise Missing Person Alerts Instantly</h3>
+        <p class="step-desc">Any organizer can tap Report Missing Person, fill in the details, and broadcast a high-priority alert to every device on the network. When the person is found, a single tap closes the alert and notifies the whole team.</p>
+      </div>
+    </div>
+
+    <div class="workflow-step" id="ws-4">
+      <div class="workflow-step-line">
+        <div class="step-num">05</div>
+        <div class="step-connector"></div>
+      </div>
+      <div class="workflow-step-body">
+        <h3 class="step-title">Manage Car Parks Without Guesswork</h3>
+        <p class="step-desc">Organizers at each lot use + and − to keep vehicle counts accurate as cars come and go. The main panel sees live capacity across all lots and can add or remove lots dynamically during the event.</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══ TECH STACK -->
+<section class="section-pad" style="background:var(--bg)">
+  <div class="section-header" id="stack-header">
+    <h2 class="section-title">Built on a<br/><span class="serif">Modern Stack</span></h2>
+    <p class="section-desc">A production-grade set of tools chosen for reliability, real-time capability, and cross-platform reach.</p>
+  </div>
+
+  <div class="stack-grid" id="stack-grid">
+    <div class="stack-pill"><span class="stack-emoji">📱</span> React Native</div>
+    <div class="stack-pill"><span class="stack-emoji">⚡</span> Expo</div>
+    <div class="stack-pill"><span class="stack-emoji">🛣️</span> Expo Router</div>
+    <div class="stack-pill"><span class="stack-emoji">🎨</span> TailwindCSS</div>
+    <div class="stack-pill"><span class="stack-emoji">🟢</span> Node.js</div>
+    <div class="stack-pill"><span class="stack-emoji">⚙️</span> Express.js</div>
+    <div class="stack-pill"><span class="stack-emoji">🍃</span> MongoDB Atlas</div>
+    <div class="stack-pill"><span class="stack-emoji">☁️</span> Microsoft Azure</div>
+    <div class="stack-pill"><span class="stack-emoji">🔄</span> n8n Automation</div>
+    <div class="stack-pill"><span class="stack-emoji">🔔</span> Expo Notifications</div>
+    <div class="stack-pill"><span class="stack-emoji">📚</span> Mongoose ODM</div>
+    <div class="stack-pill"><span class="stack-emoji">🔒</span> JWT Auth</div>
+  </div>
+</section>
+
+<!-- ═══ TEAM -->
+<section class="section-pad team-section" id="team">
+  <div class="section-header" id="team-header">
+    <h2 class="section-title">Meet the<br/><span class="serif">Team</span></h2>
+    <p class="section-desc">Group 16 — Department of Computer Engineering, University of Peradeniya.</p>
+  </div>
+
+  <div class="supervisor-card">
+  <img
+    class="supervisor-avatar-img"
+    src="./images/team/supervisor.png"
+    alt="Ms. Yasodha Vimukthi"
+    onerror="this.style.display='none'"
+  />
+  <div class="supervisor-label">Supervisor</div>
+  <div class="supervisor-name">Ms. Yasodha Vimukthi</div>
+  <div class="supervisor-role">Lecturer (Prob)</div>
+  <a href="mailto:yasodhav@eng.pdn.ac.lk" class="supervisor-email">yasodhav@eng.pdn.ac.lk</a>
+  <div class="supervisor-links">
+    <a href="https://people.ce.pdn.ac.lk/staff/academic/yasodha-vimukthi/" target="_blank" class="supervisor-link">
+      View Profile
+    </a>
+  </div>
+</div>
+
+  <div class="team-grid">
+
+  
+  <div class="team-card" id="tm-1">
+    <img class="team-avatar-img" src="./images/team/e21045.png" alt="Shane Baines"
+      onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+    <div class="team-avatar" style="display:none">SB</div>
+    <div class="team-name">Shane Baines</div>
+    <div class="team-id">E/21/045</div>
+    <div class="team-email">e21045@eng.pdn.ac.lk</div>
+    <div class="team-social-links">
+      <a href="" target="_blank" class="team-social-link gh">GitHub</a>
+      <a href="" target="_blank" class="team-social-link li">LinkedIn</a>
+      <a href="" target="_blank" class="team-social-link pf">Portfolio</a>
+    </div>
+  </div>
+
+  <div class="team-card" id="tm-2">
+    <img class="team-avatar-img" src="./images/team/e21065.png" alt="Ridmal Chamod"
+      onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+    <div class="team-avatar" style="display:none">RC</div>
+    <div class="team-name">Ridmal Chamod</div>
+    <div class="team-id">E/21/065</div>
+    <div class="team-email">e21065@eng.pdn.ac.lk</div>
+    <div class="team-social-links">
+      <a href="" target="_blank" class="team-social-link gh">GitHub</a>
+      <a href="" target="_blank" class="team-social-link li">LinkedIn</a>
+      <a href="" target="_blank" class="team-social-link pf">Portfolio</a>
+    </div>
+  </div>
+
+  <div class="team-card" id="tm-3">
+    <img class="team-avatar-img" src="./images/team/e21277.png" alt="Venuka Kalana"
+      onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+    <div class="team-avatar" style="display:none">VK</div>
+    <div class="team-name">Venuka Kalana</div>
+    <div class="team-id">E/21/277</div>
+    <div class="team-email">e21277@eng.pdn.ac.lk</div>
+    <div class="team-social-links">
+      <a href="" target="_blank" class="team-social-link gh">GitHub</a>
+      <a href="" target="_blank" class="team-social-link li">LinkedIn</a>
+      <a href="" target="_blank" class="team-social-link pf">Portfolio</a>
+    </div>
+  </div>
+
+  <div class="team-card" id="tm-0">
+    <img class="team-avatar-img" src="./images/team/e21444.png" alt="Deeshan Wijesinghe"
+      onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+    <div class="team-avatar" style="display:none">DW</div>
+    <div class="team-name">Deeshan Wijesinghe</div>
+    <div class="team-id">E/21/444</div>
+    <div class="team-email">e21444@eng.pdn.ac.lk</div>
+    <div class="team-social-links">
+      <a href="https://github.com/Deeshannn" target="_blank" class="team-social-link gh">GitHub</a>
+      <a href="https://www.linkedin.com/in/deeshanwijesinghe" target="_blank" class="team-social-link li">LinkedIn</a>
+      <a href="https://www.thecn.com/EW804" target="_blank" class="team-social-link pf">Portfolio</a>
+    </div>
+  </div>
+
+
+</div>
+
+  
+</section>
+
+<!-- ═══ DOWNLOAD CTA -->
+<section class="cta-section" id="download">
+  <div class="cta-content">
+    <div class="live-badge">
+      <span class="live-dot"></span>
+      Android APK Available Now
+    </div>
+
+    <h2 class="cta-title">
+      Ready to Take Control<br/>
+      <span class="serif">of Your Event?</span>
+    </h2>
+    <p class="cta-sub">Download the app, create your account, and start managing crowds with confidence.</p>
+
+    <div class="cta-buttons">
+      <a href="https://expo.dev/accounts/ridmal/projects/engex/builds/3536c7f0-b193-4842-bd56-1c829f0f3b87" target="_blank" class="download-card">
+        <div>
+          <div class="download-label">Android</div>
+          <div class="download-name">Download APK</div>
+        </div>
+      </a>
+      <a href="https://github.com/cepdnaclk/e21-co227-Crowd-Balance-Mobile-App" target="_blank" class="download-card">
+        <div>
+          <div class="download-label">Open Source</div>
+          <div class="download-name">GitHub Repository</div>
+        </div>
+      </a>
+    </div>
+
+    <div style="margin-top:2.25rem;font-size:0.82rem;color:rgba(255,255,255,0.5)">
+      iOS users can run the app via <strong style="color:rgba(255,255,255,0.75)">Expo Go</strong> — no separate IPA build required.
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FOOTER -->
+<footer class="footer-links">
+  <div>
+    <div class="footer-brand-name">
+      <!-- <div class="nav-logo-icon" style="width:32px;height:32px;font-size:0.78rem">EX</div> -->
+       <img src="./images/logo.png" alt="EngEx Logo" style="width:32px;height:32px;margin-right:8px" />
+      EngEx CrowdBalance
+    </div>
+    <p class="footer-brand-desc">A smart crowd management mobile app built for PeraVerse — the 75th Anniversary Exhibition at the University of Peradeniya.</p>
+  </div>
+
+  <div>
+    <div class="footer-col-title">Project</div>
+    <ul class="footer-list">
+      <li><a href="https://github.com/cepdnaclk/e21-co227-Crowd-Balance-Mobile-App" target="_blank">GitHub Repository</a></li>
+      <li><a href="https://documenter.getpostman.com/view/46290310/2sB3WyLcrR" target="_blank">API Docs (Postman)</a></li>
+      <li><a href="https://expo.dev/accounts/ridmal/projects/engex/builds/3536c7f0-b193-4842-bd56-1c829f0f3b87" target="_blank">Download Android APK</a></li>
+    </ul>
+  </div>
+
+  <div>
+    <div class="footer-col-title">University</div>
+    <ul class="footer-list">
+      <li><a href="http://www.ce.pdn.ac.lk/" target="_blank">Dept. of Computer Engineering</a></li>
+      <li><a href="https://eng.pdn.ac.lk/" target="_blank">University of Peradeniya</a></li>
+    </ul>
+  </div>
+
+  <div>
+    <div class="footer-col-title">Stack</div>
+    <ul class="footer-list">
+      <li><a href="#">React Native + Expo</a></li>
+      <li><a href="#">Node.js + Express.js</a></li>
+      <li><a href="#">MongoDB Atlas</a></li>
+      <li><a href="#">Microsoft Azure</a></li>
+    </ul>
+  </div>
+</footer>
+
+<div class="footer-bottom">
+  <div class="footer-copy">© 2025 Group 16 · CO227 Project · University of Peradeniya</div>
+  <div class="footer-copy">Version 1.0 · Published November 2025</div>
+</div>
+
+<script>
+  // Intersection observer for scroll animations
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('vis', 'visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  // Section headers
+  document.querySelectorAll('[id$="-header"]').forEach(el => observer.observe(el));
+
+  // Stats
+  document.querySelectorAll('.stat-item').forEach((el, i) => {
+    el.style.transitionDelay = `${i * 0.1}s`;
+    observer.observe(el);
+  });
+
+  // Feature cards
+  document.querySelectorAll('.feature-card').forEach((el, i) => {
+    el.style.transitionDelay = `${i * 0.08}s`;
+    observer.observe(el);
+  });
+
+  // Arch layers
+  ['al-1','al-2','al-3'].forEach((id, i) => {
+    const el = document.getElementById(id);
+    if (el) { el.style.transitionDelay = `${i * 0.15}s`; observer.observe(el); }
+  });
+
+  // Screen showcases
+  for (let i = 0; i <= 7; i++) {
+    const el = document.getElementById(`sc-${i}`);
+    if (el) { el.style.transitionDelay = `${i * 0.09}s`; observer.observe(el); }
+  }
+
+  // Workflow
+  for (let i = 0; i <= 4; i++) {
+    const el = document.getElementById(`ws-${i}`);
+    if (el) { el.style.transitionDelay = `${i * 0.12}s`; observer.observe(el); }
+  }
+
+  // Stack pills
+  document.querySelectorAll('.stack-pill').forEach((el, i) => {
+    el.style.transitionDelay = `${i * 0.04}s`;
+    observer.observe(el);
+  });
+
+  // Team cards
+  for (let i = 0; i <= 3; i++) {
+    const el = document.getElementById(`tm-${i}`);
+    if (el) { el.style.transitionDelay = `${i * 0.1}s`; observer.observe(el); }
+  }
+
+  // Video
+  function loadVideo() {
+    const placeholder = document.getElementById('video-placeholder');
+    // Replace YOUR_YOUTUBE_VIDEO_ID with your actual YouTube video ID
+    // e.g. 'dQw4w9WgXcQ'
+    const youtubeId = 'YOUR_YOUTUBE_VIDEO_ID';
+    const frame = document.getElementById('video-frame');
+
+    if (youtubeId === 'YOUR_YOUTUBE_VIDEO_ID') {
+      placeholder.innerHTML = `
+        <div style="text-align:center;color:var(--text-muted);padding:40px 20px">
+          <div style="font-size:2.5rem;margin-bottom:1rem">🎬</div>
+          <div style="font-weight:700;font-size:1rem;color:var(--text);margin-bottom:8px">Add Your Video</div>
+          <div style="font-size:0.82rem;margin-bottom:1rem">Replace <code style="background:var(--bg2);padding:2px 6px;border-radius:4px">YOUR_YOUTUBE_VIDEO_ID</code> in the script with your actual YouTube video ID.</div>
+        </div>`;
+    } else {
+      frame.innerHTML = `<iframe style="width:100%;height:100%;border:none;border-radius:22px" src="https://www.youtube.com/embed/${youtubeId}?autoplay=1" allow="autoplay; fullscreen"></iframe>`;
+    }
+  }
+
+  // Smooth scroll
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', (e) => {
+      const target = document.querySelector(anchor.getAttribute('href'));
+      if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+    });
+  });
+
+  // Nav active
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('.nav-links a');
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(s => { if (window.scrollY >= s.offsetTop - 100) current = s.id; });
+    navLinks.forEach(link => {
+      link.style.color = link.getAttribute('href') === `#${current}` ? 'var(--blue-600)' : '';
+    });
+  });
+</script>
+</body>
+</html>
